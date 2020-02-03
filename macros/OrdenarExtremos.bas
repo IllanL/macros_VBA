@@ -16,7 +16,7 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
 ' Lo que se propone, en cambio, es multiplicar la matriz por sí misma un número considerable de veces. Esto provoca que los autovectores más pesados
 ' vayan apareciendo en la diagonal. Reordenando luego los valores de la diagonal por peso, tendremos los extremos ordenados por importancia.
 
-    'Definición de variables
+    ' Definición de variables
 
     Dim columnaextremo1 As Integer
     Dim columnaextremo2 As Integer
@@ -26,17 +26,24 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
     Dim Carray(273) As Variant
     Dim item As Variant
     
-    'Encontrar ambos extremos
+    ' Definimos las hojas del libro:
+    
+    Hoja_partida = "datos"
+    Hoja_1 = "aIT"
+    Hoja_2 = "FAL"
+    Hoja_3 = "SAP"
+    
+    ' Encontrar ambos extremos:
     
     
-    Worksheets("aIT").Activate
+    Worksheets(Hoja_1).Activate
 
-    columnaextremo1 = encuentracolumnas("EXTREME1")
-    columnaextremo2 = encuentracolumnas("EXTREME2")
+    columnaextremo1 = encuentracolumnas("EXTREME1", 1000)
+    columnaextremo2 = encuentracolumnas("EXTREME2", 1000)
     
     MsgBox (CStr(columnaextremo1) & "/" & CStr(columnaextremo2))
     
-    'Tamaño de los datos
+    ' Tamaño de los datos
 
     Range("A2").Activate
     
@@ -50,19 +57,17 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
     Wend
         
     
-    'Definir array con todos los valores diferentes
+    ' Definir array con todos los valores diferentes
         
     Range("A2").Offset(0, columnaextremo1 - 1).Activate
 
     j = 2
     
     Carray(1) = 0
-    'Extremo1
     
     For i = 1 To numerocolumnas
     
         If Not IsInArray(ActiveCell.Value, Carray) Then
-        'If IsError(Application.Match(ActiveCell.Value, Carray, False)) Then
                        
             Carray(j) = ActiveCell.Value
             j = j + 1
@@ -72,8 +77,6 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
         ActiveCell.Offset(1, 0).Activate
         
     Next
-    
-    'Extremo2
     
     Range("A2").Offset(0, columnaextremo2 - 1).Activate
     
@@ -91,17 +94,7 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
         
     Next
     
-    'Prueba
-    Dim textocarray As String
-    
-    For Each element In Carray
-    
-        textocarray = textocarray + Chr(10) + CStr(element)
-    Next element
-    
-    'MsgBox (textocarray)
-    
-    Worksheets("datos").Activate
+    Worksheets(Hoja_partida).Activate
     Range("C5").Activate
     j = 1
     
@@ -112,16 +105,18 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
         ActiveCell.Offset(j, 1).Value = 1
     Next
   
-    'Definir la matriz
+    
+    ' VBA no nos permite redimensionar dinámicamente la matriz, de forma que debemos crearla primero y con ReDim, redimensionarla luego:
+    
+    ' Obtenemos primero las dimensiones de la matriz:
+    
+    ' Definir la matriz: Ubound nos devuelve el mayor subíndice del vector:
     
     Dim dimensionmatriz As Integer
     dimensionmatriz = UBound(Carray)
-          
-    
-    MsgBox (dimensionmatriz)
     
     
-    Worksheets("aIT").Activate
+    Worksheets(Hoja_1).Activate
     Range("A2").Offset(0, columnaextremo1 - 1).Select
     
     Dim i_1 As Variant
@@ -139,40 +134,25 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
             
         Next
     Next
-    
-    MsgBox (numerocolumnas)
 
-    For i = 1 To numerocolumnas
+    ' Rellenamos la matriz, con el número de veces que se encuentra cada par de conectores:
     
-        filmatriz = Application.Match(ActiveCell.Value, Carray, False)
-        
-        colmatriz = Application.Match(ActiveCell.Offset(0, columnaextremo2 - columnaextremo1).Value, Carray, 0)
-        
-        'MsgBox (filmatriz & "/" & colmatriz)
-        
-        MATRIZ(filmatriz, colmatriz) = MATRIZ(filmatriz, colmatriz) + 1
-        
-        ActiveCell.Offset(1, 0).Activate
-            
-    Next
+    ' Para ello tenemos que barrer por cada uno de los extremos, buscando cada pareja en nuestro vector, de forma que obtengamos la posición de cada
+    ' elemento en el mismo, a fin de obtener una fila y una columna, y por lo tanto, una posición para dicho valor en nuestra matriz, posición en la
+    ' que anotamos un +1, correspondiente a una conexión establecida:
+    
+    ' La primera vez barremos partiendo de la primera columna, tomando los pares en la forma extremo1-extremo2. A continuación tenemos que hacer lo
+    ' mismo barriendo por la segunda columna, referenciando los pares como extremo2-extremo1:
+    
+    MATRIZ = crea_matriz(numerocolumnas, columnaextremo2 - columnaextremo1, Carray)
     
     Range("A2").Offset(0, columnaextremo2 - 1).Select
     
-    For i = 1 To numerocolumnas
-    
-        filmatriz = Application.Match(ActiveCell.Value, Carray, 0)
-      
-        colmatriz = Application.Match(ActiveCell.Offset(0, columnaextremo1 - columnaextremo2).Value, Carray, False)
-        
-        MATRIZ(filmatriz, colmatriz) = MATRIZ(filmatriz, colmatriz) + 1
-        
-        ActiveCell.Offset(1, 0).Activate
-    
-    Next
+    Call barrecolumnas(numerocolumnas, columnaextremo1 - columnaextremo2)
     
     MATRIZ(1, 1) = 0
     
-    'GoTo SALTA_ESCRIBIR_MATRIZ
+    ' Pasamos a una nueva hoja e imprimimos la matriz:
     
     Worksheets("Datos").Activate
     Range("E5").Activate
@@ -183,40 +163,34 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
         Next
     Next
     
+    ' A partir de aquí se trataría de ordenar los conectores por número de conexiones:
     
-SALTA_ESCRIBIR_MATRIZ:
+    ' Lo ideal sería poder emplear una descomposición en autovalores y autovectores, o bien una factorización LU. Dado que, por lo que hemos visto
+    ' VBA no proporciona algoritmos para realizar dichas operaciones, e implementarlas está fuera del alcance de este proyecto, en lugar de emplear
+    ' estas técnicas, vamos a emplear otra, más sencilla algorítimicamente, y que da también buenos resultados.
+    
+    ' Para ello vamos a aprovechar una propiedad de las matrices, y es que, multiplicadas por sí mismas el número suficiente de veces, en su diagonal
+    ' comienzan a aparecer valores próximos a sus autovalores.
+    
+    ' Así que lo que haremos será multiplicar nuestra matriz por sí misma un número suficiente de veces, y tras ello ordenaremos la matriz resultante
+    ' por el peso de las componente de su diagonal.
+    
+    ' Almacenaremos entonces el orden resultante para la matriz multiplicada, para aplicarlo porsteriormente en la original.
 
-    'Imprimir matriz
+    ' Creamos una segunda matriz en la que almacenamos el resultado de multiplicar la primera por sí misma:
     
     Dim MATRIZ_2() As Variant
-    
     ReDim MATRIZ_2(1 To dimensionmatriz, 1 To dimensionmatriz)
-    
-    
-    For i = 1 To dimensionmatriz
-        For j = 1 To dimensionmatriz
-            For k = 1 To dimensionmatriz
-
-                    MATRIZ_2(i, j) = MATRIZ_2(i, j) + MATRIZ(i, k) * MATRIZ(k, j)
-
-            Next
-        Next
-    Next
-    
-    '----------------------------------------------------------------------------
     
     Dim MATRIZ_3() As Variant
     ReDim MATRIZ_3(1 To dimensionmatriz, 1 To dimensionmatriz)
     
+    
+    MATRIZ2 = multiplicamatriz(MATRIZ, MATRIZ, dimensionmatriz) ' Multiplica matrices cuadradas
+    
     For m = 1 To 10
     
-        For i = 1 To dimensionmatriz
-            For j = 1 To dimensionmatriz
-                For k = 1 To dimensionmatriz
-                    MATRIZ_3(i, j) = MATRIZ_3(i, j) + MATRIZ_2(i, k) * MATRIZ(k, j)
-                Next
-            Next
-        Next
+        MATRIZ3 = multiplicamatriz(MATRIZ2, MATRIZ, dimensionmatriz) ' Multiplica matrices cuadradas
     
         For i = 1 To dimensionmatriz
             For j = 1 To dimensionmatriz
@@ -227,7 +201,7 @@ SALTA_ESCRIBIR_MATRIZ:
     
     Next
     
-    '------------------------------------------------------------------------------
+    ' Reducimos el tamaño de los números de la matriz, para evitar problemas numéricos, mediante una transformación que sea biyectiva:
     
     For i = 1 To dimensionmatriz
         For j = 1 To dimensionmatriz
@@ -236,6 +210,8 @@ SALTA_ESCRIBIR_MATRIZ:
     Next
     
     '------------------------------------------------------------------------------
+    
+    ' Vamos ahora a reordenar la matriz resultante, para ordenarla según el peso de sus autovalores:
     
     Dim CAMBIO_DE_ORDEN() As Variant
     ReDim CAMBIO_DE_ORDEN(dimensionmatriz)
@@ -265,6 +241,8 @@ SALTA_ESCRIBIR_MATRIZ:
                 
             Next
             
+            ' Modificamos ahora nuestra matriz multiplicada y la original en función del orden obtenido:
+            
             For k = 1 To dimensionmatriz
             
                 a = MATRIZ_2(k, j)
@@ -288,66 +266,58 @@ SALTA_ESCRIBIR_MATRIZ:
     
     '------------------------------------------------------------------------------
     
-    Worksheets("FAL").Activate
-    Range("E5").Activate
+    ' Vamos a dejar ahora plasmada la matriz multiplicada (valor a valor) en celdas de Excel, para poder comprobar que el proceso ha sido realizado
+    ' correctamente:
     
-    For i = 1 To dimensionmatriz
-        For j = 1 To dimensionmatriz
-            ActiveCell.Offset(i, j).Value = MATRIZ_2(i, j)
-        Next
-    Next
+    Worksheets(Hoja_2).Activate
     
-    Range("E5").Activate
+    Call escribe_matriz(dimensionmatriz, "E5", MATRIZ_2, Carray, CAMBIO_DE_ORDEN) ' Subrutina que escribe la matriz, partiendo de un rango dado
     
-    For i = 1 To dimensionmatriz
+    Worksheets(Hoja_3).Activate
     
-        ActiveCell.Offset(i, 0).Value = Carray(CAMBIO_DE_ORDEN(i))
-        ActiveCell.Offset(0, i).Value = Carray(CAMBIO_DE_ORDEN(i))
-        
-        
-        'ActiveCell.Offset(i, 0).Value = CAMBIO_DE_ORDEN(i)
-        'ActiveCell.Offset(0, i).Value = CAMBIO_DE_ORDEN(i)
-    Next
-    
-    Worksheets("SAP").Activate
-    Range("E5").Activate
-    
-    For i = 1 To dimensionmatriz
-        For j = 1 To dimensionmatriz
-            ActiveCell.Offset(i, j).Value = MATRIZ(i, j)
-        Next
-    Next
-    
-    Range("E5").Activate
-    
-    For i = 1 To dimensionmatriz
-    
-        ActiveCell.Offset(i, 0).Value = Carray(CAMBIO_DE_ORDEN(i))
-        ActiveCell.Offset(0, i).Value = Carray(CAMBIO_DE_ORDEN(i))
-        
-    Next
+    Call escribe_matriz(dimensionmatriz, "E5", MATRIZ, Carray, CAMBIO_DE_ORDEN)
       
 End Sub
 
-Private Function encuentracolumnas(valor As String) As Integer
 
-    Dim contador As Integer
-    contador = 1
+' Funciones y subrutinas empleadas:
+
+Private Function encuentracolumnas(valor As String, limite As Integer) As Integer
+
+    ' Busca en las columnas de la primera fila de una hoja un patrón, hasta un límite definido por el usuario, y devuelve el número de la columna
+    ' en la que lo ha encontrado:
+
+    Dim CONTADOR As Integer
+    CONTADOR = 1
     
     Range("A1").Select
+    
+    While ActiveCell.Column < limite
 
-    While InStr(1, ActiveCell.Value, valor) < 1
-        
-        contador = contador + 1
-        ActiveCell.Offset(0, 1).Activate
-        
+        While InStr(1, ActiveCell.Value, valor) < 1
+            
+            CONTADOR = CONTADOR + 1
+            ActiveCell.Offset(0, 1).Activate
+            
+        Wend
+    
     Wend
     
-    encuentracolumnas = contador
+    If ActiveCell.Column < limite Then
+    
+        encuentracolumnas = CONTADOR
+    
+    Else
+    
+        encuentracolumnas = 0
+        
+    End If
 
 End Function
 
 Private Function IsInArray(aencontrar As Variant, arr As Variant) As Boolean
+
+    ' Determina si un valor se encuentra en un array o no:
 
     'IsInArray = (UBound(Filter(arr, aencontrar, True, 1)) > -1)
     
@@ -355,38 +325,71 @@ Private Function IsInArray(aencontrar As Variant, arr As Variant) As Boolean
 
 End Function
 
-Private Sub PRUEBAEJEMPLO()
+Private Function crea_matriz(numerocolumnas As Integer, diferencia As Integer, mi_arr As Variant) As Variant
 
-Dim fruits As Variant
-Dim item As Variant
+    ' Función que genera la matriz que luego emplearemos:
 
+    Dim mi_mat() As Variant
+    ReDim mi_mat(1 To dimensionmatriz, 1 To dimensionmatriz)
 
-   'fruits is an array
-   fruits = Array("apple", "orange", "cherries")
-   Dim fruitnames As Variant
- 
-   'iterating using For each loop.
-   For Each item In fruits
-      fruitnames = fruitnames & item & Chr(10)
-   Next
-   
-   MsgBox fruitnames
-End Sub
+    For i = 1 To numerocolumnas
+    
+        filmatriz = Application.Match(ActiveCell.Value, mi_arr, 0)
+      
+        colmatriz = Application.Match(ActiveCell.Offset(0, diferencia).Value, mi_arr, False)
+        
+        mi_mat(filmatriz, colmatriz) = mi_mat(filmatriz, colmatriz) + 1
+        
+        ActiveCell.Offset(1, 0).Activate
+        
+    Next i
+    
+    Set crea_matriz = mi_mat
 
-Sub nuevo()
+End Function
 
-Dim pos, arr, val
+Private Function multiplicamatriz(M1 As Variant, M2 As Variant, tamaño As Integer) As Variant
 
-arr = Array(1, 2, 4, 5)
-val = 4
+    ' Multiplica matrices cuadradas, el modo es para indicar el borrado de la matriz multiplicada o no:
+    
+    Dim mi_mat_2() As Variant
+    ReDim mi_mat_2(1 To dimensionmatriz, 1 To dimensionmatriz)
 
-pos = Application.Match(val, arr, False)
+    For i = 1 To tamaño
+        For j = 1 To tamaño
+            For k = 1 To tamaño
 
-If Not IsError(pos) Then
-   MsgBox pos
-Else
-   MsgBox CStr(pos)
-End If
+                    mi_mat_2(i, j) = MATRIZ_2(i, j) + M1(i, k) * M2(k, j)
+                    
+            Next
+        Next
+    Next
+
+    Set multiplicamatriz = mi_mat_2
+
+End Function
+
+Private Sub escribe_matriz(tamaño, rango_escogido, mat, mi_array, orden)
+
+    ' Subrutina que escribe la matriz, partiendo de un rango dado:
+
+    Range(rango_escogido).Activate
+    
+    For i = 1 To tamaño
+        For j = 1 To tamaño
+            ActiveCell.Offset(i, j).Value = mat(i, j)
+        Next
+    Next
+    
+    Range(rango_escogido).Activate
+    
+    For i = 1 To dimensionmatriz
+    
+        ActiveCell.Offset(i, 0).Value = mi_array(orden(i))
+        ActiveCell.Offset(0, i).Value = mi_array(orden(i))
+
+    Next
+
 
 End Sub
 
