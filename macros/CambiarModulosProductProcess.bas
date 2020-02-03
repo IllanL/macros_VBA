@@ -35,13 +35,13 @@ For Each OPERACION In PROCESO.Products
             
                 If InStr(1, SUBSTEP.Name, "PRODUCT") > 0 Then
                 
-                    For Each Elemento In SUBSTEP.Products
+                    For Each elemento In SUBSTEP.Products
                     
-                        If Elemento.Partnumber Like "NSA937901M22-0*" Then
+                        If elemento.Partnumber Like "NSA937901M22-0*" Then
                         
                             Selection1.Clear
                             
-                            Selection1.Add Elemento
+                            Selection1.Add elemento
                            
                             For i = 1 To Camaras.DMUReviews.Count
                             
@@ -73,7 +73,7 @@ For Each OPERACION In PROCESO.Products
                                                     
                                                         Set bolsa = bolsas.item(m)
                                                         'bolsa.RemoveExplicit 1
-                                                        bolsa.AddExplicit Elemento
+                                                        bolsa.AddExplicit elemento
                                                         
                                                         Selection1.Clear
                                                         
