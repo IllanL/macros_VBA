@@ -3,6 +3,8 @@ Sub VolcarCamaraSelSet()
 
 ' Esta macro sirve para, en Catia, volcar el contenido de una estructura de carpetas y bolsas a Selection Sets:
 
+' ¡ATENCIÓN! Toma el producto activo en Catia:
+
     ' Iniciamos variables:
 
     Dim CATIA As Object
@@ -21,6 +23,9 @@ Sub VolcarCamaraSelSet()
     Dim review_tasks As DMUReview
     Dim review_steps As DMUReview
     Dim review_tec As DMUReview
+    
+    ' Congelamos la pantalla por motivos de rapidez:
+    Application.ScreenUpdating = False
     
     ' Elegimos de las aplicaciones abiertas, Catia, y dentro el archivo en pantalla (activo) y tomamos la colección de todas las DMUReviews de
     ' dicho archivo:
@@ -113,5 +118,8 @@ Sub VolcarCamaraSelSet()
     ' Indicamos el número de cámaras, que ha de coincidir con el de Selection Sets creados, como sanity check para el usuario:
     
     MsgBox (ContadorCamaras & " Selection Sets creados")
-
+    
+    ' Descongelamos la pantalla:
+    Application.ScreenUpdating = True
+    
 End Sub

@@ -16,6 +16,8 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
 ' Lo que se propone, en cambio, es multiplicar la matriz por sí misma un número considerable de veces. Esto provoca que los autovectores más pesados
 ' vayan apareciendo en la diagonal. Reordenando luego los valores de la diagonal por peso, tendremos los extremos ordenados por importancia.
 
+' ¡ATENCIÓN! Toma el producto activo en Catia:
+
     ' Definición de variables
 
     Dim columnaextremo1 As Integer
@@ -32,6 +34,9 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
     Hoja_1 = "aIT"
     Hoja_2 = "FAL"
     Hoja_3 = "SAP"
+    
+    ' Congelamos la pantalla por motivos de rapidez:
+    Application.ScreenUpdating = False
     
     ' Encontrar ambos extremos:
     
@@ -276,6 +281,9 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
     Worksheets(Hoja_3).Activate
     
     Call escribe_matriz(dimensionmatriz, "E5", MATRIZ, Carray, CAMBIO_DE_ORDEN)
+    
+    ' Descongelamos la pantalla:
+    Application.ScreenUpdating = True
       
 End Sub
 

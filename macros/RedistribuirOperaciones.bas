@@ -1,11 +1,14 @@
 Attribute VB_Name = "RedistribuirOperaciones"
 Sub Redistribuir_Operaciones()
 
-    ' Esta macro pretende reorganizar un árbol de estructura de CMS (que no es más que una cascada de nodos Component anidados con una serie
-    ' de propiedades que reflejan la estructura real del trabajo a realizar), reasignando un determinado componente eléctrico de una parte del árbol
-    ' a otra, creando la estructura correspondiente en el destino y eliminando la operación de origen.
-    
-    ' El componente es seleccionado siguiendo un patrón que puede modificarse en el código a gusto del usuario.
+' Esta macro pretende reorganizar un árbol de estructura de CMS (que no es más que una cascada de nodos Component anidados con una serie
+' de propiedades que reflejan la estructura real del trabajo a realizar), reasignando un determinado componente eléctrico de una parte del árbol
+' a otra, creando la estructura correspondiente en el destino y eliminando la operación de origen.
+
+' El componente es seleccionado siguiendo un patrón que puede modificarse en el código a gusto del usuario.
+
+' ¡ATENCIÓN! Toma el producto activo en Catia:
+
 
     ' CheckReferenciasCATIA
     
@@ -22,6 +25,10 @@ Sub Redistribuir_Operaciones()
     ' Fijamos el patrón:
     
     PATRON = "VT"
+    
+    ' Congelamos la pantalla por motivos de rapidez:
+    Application.ScreenUpdating = False
+    
     
     ' Elegimos de las aplicaciones abiertas, Catia, y dentro el archivo en pantalla (activo) y tomamos la colección de todas las DMUReviews de
     ' dicho archivo:
@@ -136,9 +143,6 @@ Sub Redistribuir_Operaciones()
                                 End If
                                 
                                 TEXTO_STEP_CONTADOR = TEXTO_TAREA_CONTADOR + "STEP01-"
-                                        
-                                'MsgBox (OPERACION_TEXTO + TEXTO_TAREA_CONTADOR + TEXTO_FINAL)
-                                
                                 
                                 'Creamos la estructura de tarea, step y creamos los dos components, para colgar los productos y recursos del step:
 
@@ -146,9 +150,6 @@ Sub Redistribuir_Operaciones()
                                 NUEVA_TAREA.Name = OPERACION_TEXTO + TEXTO_TAREA_CONTADOR + TEXTO_FINAL
                                 Set NUEVA_TAREA = OPERACION.Products.item(OPERACION.Products.Count)
                                 NUEVA_TAREA.Partnumber = OPERACION_TEXTO + TEXTO_TAREA_CONTADOR + TEXTO_FINAL
-                                
-                                'Set NUEVA_TAREA = OPERACION.Products.Item(OPERACION.Products.Count)
-                                'Set NUEVA_TAREA.Partnumber = OPERACION_TEXTO + TEXTO_TAREA_CONTADOR + TEXTO_FINAL
      
                                 Set NUEVA_TAREA = OPERACION.ReferenceProduct.Products.item(OPERACION.Products.Count)
                                 Set STEP = NUEVA_TAREA.ReferenceProduct.Products.item(1)
@@ -187,5 +188,8 @@ Sub Redistribuir_Operaciones()
         End If
                    
     Next
+    
+    ' Descongelamos la pantalla:
+    Application.ScreenUpdating = True
    
 End Sub

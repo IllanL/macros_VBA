@@ -1,9 +1,11 @@
 Attribute VB_Name = "RedistribuirVGs"
 Sub Redistribuir_VGs()
 
-    ' Macro similar a Redistribuir_Operaciones, pero que en este caso saca un determinado tipo de conectores de una operación y los asigna
-    ' a las operaciones en cuyo nombre aparece dicho conector, creando la estructura de tareas y steps necesaria, y los componentes para
-    ' los productos y recursos asociados a dichos steps, a partir de un patrón que identifica a dichos conectores:
+' Macro similar a Redistribuir_Operaciones, pero que en este caso saca un determinado tipo de conectores de una operación y los asigna
+' a las operaciones en cuyo nombre aparece dicho conector, creando la estructura de tareas y steps necesaria, y los componentes para
+' los productos y recursos asociados a dichos steps, a partir de un patrón que identifica a dichos conectores:
+
+' ¡ATENCIÓN! Toma el producto activo en Catia:
 
     ' CheckReferenciasCATIA
     
@@ -16,6 +18,9 @@ Sub Redistribuir_VGs()
     Dim TEXTO_TAREA_CONTADOR As String
     Dim CONECTOR2 As String
     Dim TEXTO_FINAL As String
+    
+    ' Congelamos la pantalla por motivos de rapidez:
+    Application.ScreenUpdating = False
     
     ' Elegimos de las aplicaciones abiertas, Catia, y dentro el archivo en pantalla (activo) y tomamos la colección de todas las DMUReviews de
     ' dicho archivo:
@@ -154,5 +159,8 @@ Sub Redistribuir_VGs()
     
             
     Next
+    
+    ' Descongelamos la pantalla:
+    Application.ScreenUpdating = True
    
 End Sub
