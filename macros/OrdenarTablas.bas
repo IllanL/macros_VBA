@@ -1,4 +1,4 @@
-Attribute VB_Name = "Ordenar_tablas"
+Attribute VB_Name = "OrdenarTablas"
 Sub Ordenar_tablas()
 
     ' Macro para ordenar todas las tablas en una hoja siguiendo un patrón:
