@@ -98,23 +98,6 @@ Sub VolcarCamaraSelSet()
     
     Next i
     
-    ' Dejamos los objetos empleados sin asignar, para evitar sorpresas:
-    
-    Set CATIA = Nothing
-    Set Doc = Nothing
-    Set ProductPadre = Nothing
-    Set reviews = Nothing
-    Set review_ops = Nothing
-    Set review_tasks = Nothing
-    Set review_steps = Nothing
-    Set review_tecs = Nothing
-    Set tecnologia = Nothing
-    Set ObjNavWkb = Nothing
-    Set SelSets = Nothing
-    Set Camaras = Nothing
-    Set Camara = Nothing
-    Set Sel = Nothing
-    
     ' Indicamos el número de cámaras, que ha de coincidir con el de Selection Sets creados, como sanity check para el usuario:
     
     MsgBox (ContadorCamaras & " Selection Sets creados")
