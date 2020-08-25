@@ -39,9 +39,6 @@ Sub CopiaDeWordAExcel()
             
             Debug.Print mi_doc.Name
             Debug.Print indicador_texto
-            
-            
-            '--------------
         
             For Each parrafo In mi_doc.Paragraphs
             
@@ -52,7 +49,6 @@ Sub CopiaDeWordAExcel()
                     If parrafo.Range.ListFormat.ListString = "3.1" Then
                                 
                         Set nuevo_parrafo = parrafo.Next
-                        'nuevo_parrafo.Range.Select
                         
                         Debug.Print parrafo.Range.ListFormat.ListString
                         
@@ -69,8 +65,6 @@ Sub CopiaDeWordAExcel()
                                     
                                     If nuevo_parrafo.ParaID = mi_doc.Paragraphs.Last.ParaID Then
                                         GoTo salida
-                                    Else
-                                        'nuevo_parrafo.Range.Select
                                     End If
                                 
                                 While Not (nuevo_parrafo.Range.Text Like texto_busqueda)
@@ -80,8 +74,6 @@ Sub CopiaDeWordAExcel()
                                     
                                     If nuevo_parrafo.ParaID = mi_doc.Paragraphs.Last.ParaID Then
                                         GoTo salida
-                                    Else
-                                        'nuevo_parrafo.Range.Select
                                     End If
                                     
                                     If nuevo_parrafo.Range.ListFormat.ListString = "3.2" _
@@ -90,9 +82,6 @@ Sub CopiaDeWordAExcel()
                                     End If
                                                       
                                 Wend
-                                
-                                'Debug.Print mi_texto
-                                'MsgBox mi_req & Chr(10) & mi_texto
                                 
                                 n = n + 1
                                 mi_libro_excel.ActiveSheet.Cells(n, 1).Value = mi_doc.Name
@@ -106,34 +95,18 @@ Sub CopiaDeWordAExcel()
                             End If
                             
                             If contador >= 10 Then
-                            
                                 contador = 0
                                 Set nuevo_parrafo = nuevo_parrafo.Next
-                                    
-                                    If nuevo_parrafo.ParaID = mi_doc.Paragraphs.Last.ParaID Then
-                                    
-                                        n = n + 1
-                                        Call AnotateText(mi_libro_excel, mi_doc.Name, mi_req, mi_texto, n)
-                                        
-                                        'mi_libro_excel.ActiveSheet.Cells(n, 1).Value = mi_doc.Name
-                                        'mi_libro_excel.ActiveSheet.Cells(n, 2).Value = mi_req
-                                        'mi_libro_excel.ActiveSheet.Cells(n, 3).Value = mi_texto
-                        
-                                        GoTo salida
-                                    Else
-                                        'nuevo_parrafo.Range.Select
-                                    End If
-                            
+                                
+                                If nuevo_parrafo.ParaID = mi_doc.Paragraphs.Last.ParaID Then
+                                    n = n + 1
+                                    Call AnotateText(mi_libro_excel, mi_doc.Name, mi_req, mi_texto, n)
+                                    GoTo salida
+                                End If
                             End If
-                            
-                            
                         Wend
-                        End If
                         
 punto_salida:
-                                
-                        'Debug.Print mi_texto
-                        'MsgBox mi_req & Chr(10) & mi_texto
                         
                         n = n + 1
                         Call AnotateText(mi_libro_excel, mi_doc.Name, mi_req, mi_texto, n)
@@ -151,8 +124,6 @@ punto_salida:
             Next parrafo
             
 salida:
-
-        '--------------
         
         mi_doc.Close SaveChanges:=wdDoNotSaveChanges
                   
@@ -164,10 +135,12 @@ salida:
     
 End Sub
 
-Sub AnotateText(libro_excel As Workbook, nombre_doc As String, requisito As String, descripcion As String, posicion As Integer)
+Sub AnotateText(ByVal libro_excel As Workbook, ByVal nombre_doc As String, ByVal requisito As String, ByVal descripcion As String, ByVal posicion As Long)
 
     libro_excel.ActiveSheet.Cells(posicion, 1).Value = nombre_doc
     libro_excel.ActiveSheet.Cells(posicion, 2).Value = requisito
     libro_excel.ActiveSheet.Cells(posicion, 3).Value = descripcion
 
 End Sub
+
+
