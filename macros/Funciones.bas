@@ -148,10 +148,43 @@ Function BUSCARV_N_APARICION(ByVal celda As Variant, _
 
 End Function
 
+
+
+
+
+Function COINCIDIR_MAS_CERCANO(ByVal valor As String, ByVal rango As Range, Optional ByVal umbral As Double = 0) As String
+
+    ' Devuelve el índice del valor encontrado dentro del rango buscado.
+    ' Un COINCIDIR ampliado para textos parecidos.
+
+    puntuacion = 0
+    mejor_puntuacion = umbral
+    COINCIDIR_MAS_CERCANO = 0
+    
+    indice = 0
+    
+    For Each celda In rango
+        indice = indice + 1
+        ' La comparación se realiza mediante el uso de la función SIMILITUD:
+        puntuacion = SIMILITUD(valor, celda.Value)
+        
+        If puntuacion > mejor_puntuacion Then
+        
+            COINCIDIR_MAS_CERCANO = indice
+            mejor_puntuacion = puntuacion
+            
+        End If
+        
+        puntuacion = 0
+        
+    Next celda
+    
+End Function
+
 Function TEXTO_MAS_CERCANO(ByVal valor As String, ByVal rango As Range) As String
 
-	' Devuelve el texto más cercano a uno de referencia de dentro de un rango seleccionado.
-	' Está hecho comparando los vectores de palabras de cada uno de los textos, mediante producto vectorial normalizado.
+    ' Devuelve el texto más cercano a uno de referencia de dentro de un rango seleccionado.
+    ' Está hecho comparando los vectores de palabras de cada uno de los textos, mediante producto vectorial normalizado.
 
     puntuacion = 0
     mejor_puntuacion = 0
@@ -203,9 +236,11 @@ Function SIMILITUD(ByVal valor1 As String, ByVal valor2 As String) As Double
         
     Next palabra
     
-    SIMILITUD = (puntuacion) / (palabras1 * palabras2) ^ (1 / 2)
-    
-
+    If (palabras1 <> 0 And palabras2 <> 0) Then
+        SIMILITUD = (puntuacion) / (palabras1 * palabras2) ^ (1 / 2)
+    Else
+        SIMILITUD = 0
+    End If
     
 End Function
 
@@ -244,7 +279,7 @@ End Function
 
 Private Function crea_dict(ByVal texto As String, Optional ByVal reemplazos_caract As Boolean = True) As Variant
     
-	' Función privada, empleada para crear los diccionarios de palabras que se compararán posteriormente.
+    ' Función privada, empleada para crear los diccionarios de palabras que se compararán posteriormente.
     
     Dim array_de_texto() As String
 
@@ -274,7 +309,7 @@ End Function
 Private Function crea_dict_mod(ByVal objeto As Variant) As Variant
 
     ' Función auxiliar basada en la anterior función crea_dict, que simplemente compara si el objeto en cuestión
-	' ya es un diccionario y llama a la anterior para generarlo en caso contrario.
+    ' ya es un diccionario y llama a la anterior para generarlo en caso contrario.
 
     If TypeName(objeto) = "Dictionary" Then
         Set crea_dict_mod = objeto
