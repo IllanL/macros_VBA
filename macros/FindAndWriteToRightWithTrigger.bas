@@ -1,8 +1,9 @@
 Attribute VB_Name = "FindAndWriteToRightWithTrigger"
 Sub Find_and_write_to_right_with_trigger()
 
-    ' For automatically looking for a word starting by a given text, from a certain point down, detected by match
-    ' with a trigger, within bigger texts in a column, and storing all its appearances to the right of that column:
+    ' For automatically looking for a word starting by a given text.
+	' (But that text has to contain first a trigger expression)
+	' And storing all its appearances to the right of that column:
     
     ' Initial variables:
     
@@ -16,7 +17,8 @@ Sub Find_and_write_to_right_with_trigger()
     Worksheets(HOJA).Activate
     Range(CELDA_INICIO).Select
     
-    While Not IsEmpty(ActiveCell.Value) ' Stop when you find an empty cell: end of range
+	' Stop when you find an empty cell: end of range
+    While Not IsEmpty(ActiveCell.Value) 
 
         'Cell by cell, store its value and address
         ActiveCell.Offset(1, 0).Activate

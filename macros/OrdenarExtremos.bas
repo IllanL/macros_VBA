@@ -16,8 +16,6 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
 ' Lo que se propone, en cambio, es multiplicar la matriz por sí misma un número considerable de veces. Esto provoca que los autovectores más pesados
 ' vayan apareciendo en la diagonal. Reordenando luego los valores de la diagonal por peso, tendremos los extremos ordenados por importancia.
 
-' ¡ATENCIÓN! Toma el producto activo en Catia:
-
     ' Definición de variables
 
     Dim columnaextremo1 As Integer
@@ -48,7 +46,7 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
     
     MsgBox (CStr(columnaextremo1) & "/" & CStr(columnaextremo2))
     
-    ' Tamaño de los datos
+    ' tamano de los datos
 
     Range("A2").Activate
     
@@ -206,7 +204,7 @@ Public Sub Ordenar_Extremos_Tratamiento_Matricial()
     
     Next
     
-    ' Reducimos el tamaño de los números de la matriz, para evitar problemas numéricos, mediante una transformación que sea biyectiva:
+    ' Reducimos el tamano de los números de la matriz, para evitar problemas numéricos, mediante una transformación que sea biyectiva:
     
     For i = 1 To dimensionmatriz
         For j = 1 To dimensionmatriz
@@ -356,16 +354,16 @@ Private Function crea_matriz(numerocolumnas As Integer, diferencia As Integer, m
 
 End Function
 
-Private Function multiplicamatriz(M1 As Variant, M2 As Variant, tamaño As Integer) As Variant
+Private Function multiplicamatriz(M1 As Variant, M2 As Variant, tamano As Integer) As Variant
 
     ' Multiplica matrices cuadradas, el modo es para indicar el borrado de la matriz multiplicada o no:
     
     Dim mi_mat_2() As Variant
     ReDim mi_mat_2(1 To dimensionmatriz, 1 To dimensionmatriz)
 
-    For i = 1 To tamaño
-        For j = 1 To tamaño
-            For k = 1 To tamaño
+    For i = 1 To tamano
+        For j = 1 To tamano
+            For k = 1 To tamano
 
                     mi_mat_2(i, j) = MATRIZ_2(i, j) + M1(i, k) * M2(k, j)
                     
@@ -377,14 +375,14 @@ Private Function multiplicamatriz(M1 As Variant, M2 As Variant, tamaño As Intege
 
 End Function
 
-Private Sub escribe_matriz(tamaño, rango_escogido, mat, mi_array, orden)
+Private Sub escribe_matriz(tamano, rango_escogido, mat, mi_array, orden)
 
     ' Subrutina que escribe la matriz, partiendo de un rango dado:
 
     Range(rango_escogido).Activate
     
-    For i = 1 To tamaño
-        For j = 1 To tamaño
+    For i = 1 To tamano
+        For j = 1 To tamano
             ActiveCell.Offset(i, j).Value = mat(i, j)
         Next
     Next
