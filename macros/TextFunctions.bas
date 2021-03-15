@@ -46,7 +46,7 @@ Private Function creates_dict(ByVal texto As String, Optional ByVal reemplazos_c
     End If
 
     
-    array_de_texto = Split(texto)
+    array_de_texto = Split(LCase(texto))
     ' ReDim Preserve array_de_texto(UBound(array_de_texto) - 1)
     
     Set dict_texto = CreateObject("Scripting.Dictionary")
@@ -92,8 +92,8 @@ Function SIMILARITY(ByVal valor1 As String, ByVal valor2 As String) As Double
     
     puntuacion = 0
     
-    palabras1 = N_WORDS(valor1)
-    palabras2 = N_WORDS(valor2)
+    mod1 = MODULUS(dict_valor1)
+    mod2 = MODULUS(dict_valor2)
     
     For Each palabra In dict_valor1.keys()
         
@@ -105,7 +105,7 @@ Function SIMILARITY(ByVal valor1 As String, ByVal valor2 As String) As Double
         
     Next palabra
     
-    SIMILARITY = (puntuacion) / (palabras1 * palabras2) ^ (1 / 2)
+    SIMILARITY = Sqr((puntuacion) / (mod1 * mod2))
     
 
     
@@ -142,4 +142,16 @@ Function CLEAN_TEXT(ByVal mi_texto As String)
     CLEAN_TEXT = mi_texto
 
 
+End Function
+
+Private Function MODULUS(ByVal my_dict As Variant)
+    
+    MODULUS = 0
+    
+    For Each element In my_dict.keys()
+        MODULUS = MODULUS + my_dict(element) ^ 2
+    Next element
+    
+    MODULUS = Sqr(MODULUS)
+    
 End Function

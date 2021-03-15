@@ -223,8 +223,8 @@ Function SIMILITUD(ByVal valor1 As String, ByVal valor2 As String) As Double
     
     puntuacion = 0
     
-    palabras1 = N_PALABRAS(valor1)
-    palabras2 = N_PALABRAS(valor2)
+    mod1 = MODULO(dict_valor1)
+    mod2 = MODULO(dict_valor2)
     
     For Each palabra In dict_valor1.keys()
         
@@ -236,8 +236,8 @@ Function SIMILITUD(ByVal valor1 As String, ByVal valor2 As String) As Double
         
     Next palabra
     
-    If (palabras1 <> 0 And palabras2 <> 0) Then
-        SIMILITUD = (puntuacion) / (palabras1 * palabras2) ^ (1 / 2)
+    If (mod1 <> 0 And mod2 <> 0) Then
+        SIMILITUD = Sqr(puntuacion / (mod1 * mod2))
     Else
         SIMILITUD = 0
     End If
@@ -317,4 +317,18 @@ Private Function crea_dict_mod(ByVal objeto As Variant) As Variant
         Set crea_dict_mod = crea_dict(objeto)
     End If
 
+End Function
+
+Private Function MODULO(ByVal my_dict As Variant)
+
+	' Calcula el módulo de un texto, a partir de su diccionario
+    
+    MODULO = 0
+    
+    For Each element In my_dict.keys()
+        MODULO = MODULO + my_dict(element) ^ 2
+    Next element
+    
+    MODULO = Sqr(MODULO)
+    
 End Function
