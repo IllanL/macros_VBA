@@ -1,11 +1,11 @@
 Attribute VB_Name = "TransferFromTemplateToReport"
 Const columna_fin = 8
 
-Const sheet_info = "RTM_FunCards"
+Const sheet_info = "Sheet_info"
 
-Const sheet_name_SO = "Req. SO Vs Technical Spec."
-Const sheet_name_HL = "Technical Spec. Vs Low Lev"
-Const sheet_name_LL = "Low Lev Vs ATPs & Fun Cards"
+Const sheet_name_SO = "Sheet1"
+Const sheet_name_HL = "Sheet2"
+Const sheet_name_LL = "Sheet3"
 
 Sub transfer_main()
 
@@ -17,9 +17,9 @@ Sub transfer_main()
     
     ' For that, we input the address and the name of the file:
 
-    address_CRD = "C:\Users\U18129\Desktop\CRD FFMS"
+    address_CRD = "C:/User/Desktop/the_route"
                     
-    nombre_CRD = "FFMS (Indra) Compliance Record Document CRD_v1.4.xlsm"
+    nombre_CRD = "the_doc"
     nombre_libro = Mid(nombre_CRD, 1, 15) & "*"
     
     address_total_CRD = address_CRD & nombre_CRD
@@ -131,21 +131,21 @@ Sub transfer_main()
 
 End Sub
 
-Function CheckIsAlreadyIn(ByVal Req As String, ByVal search_range As Range) As Long
+Private Function CheckIsAlreadyIn(ByVal Req As String, ByVal search_range As Range) As Long
 
-' Checks if a text matches any value of a given range.
-' Returns 0 if there are not any matches, or the value of the row of the first match
+	' Checks if a text matches any value of a given range.
+	' Returns 0 if there are not any matches, or the value of the row of the first match
 
-CheckIsAlreadyIn = 0
+	CheckIsAlreadyIn = 0
 
-For Each celda In search_range
-    If Req = celda.Value Then
-        CheckIsAlreadyIn = celda.Row
-        GoTo salida
-    End If
-Next celda
+	For Each celda In search_range
+		If Req = celda.Value Then
+			CheckIsAlreadyIn = celda.Row
+			GoTo salida
+		End If
+	Next celda
 
-salida:
+	salida:
 
 End Function
 
@@ -201,7 +201,7 @@ Sub InsertValues(ByVal value_range As Range, ByVal destination_sheet As Workshee
 
 End Sub
 
-Function dif_vals_to_dict(ByVal search_range As Range, ByVal single_col_mode As Boolean)
+Private Function dif_vals_to_dict(ByVal search_range As Range, ByVal single_col_mode As Boolean)
 
     ' Returns a dictionary of the distinct values in a range, if it is one column wide,
     ' or of the corresponding pairs, for two columns
