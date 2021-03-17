@@ -105,7 +105,7 @@ Function SIMILARITY(ByVal valor1 As String, ByVal valor2 As String) As Double
         
     Next palabra
     
-    SIMILARITY = Sqr((puntuacion) / (mod1 * mod2))
+    SIMILARITY = (puntuacion) / (mod1 * mod2)
     
 
     

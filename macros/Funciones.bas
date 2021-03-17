@@ -237,7 +237,7 @@ Function SIMILITUD(ByVal valor1 As String, ByVal valor2 As String) As Double
     Next palabra
     
     If (mod1 <> 0 And mod2 <> 0) Then
-        SIMILITUD = Sqr(puntuacion / (mod1 * mod2))
+        SIMILITUD = puntuacion / (mod1 * mod2)
     Else
         SIMILITUD = 0
     End If
