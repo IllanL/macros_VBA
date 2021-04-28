@@ -15,7 +15,8 @@ Attribute VB_Name = "Funciones"
 
 
 ' INVIERTE_TEXTO --> Invierte un texto, quitando espacios en blanco antes y después
-' HALLAR_DESDE_FIN --> Busca un patrón dado en un texto empezando desde el final, devuelve posición contando desde el inicio:
+' HALLAR_DERECHA --> Busca un patrón dado en un texto empezando desde el final, devuelve posición contando desde el inicio
+' EXTRAE_DERECHA --> Extrae desde el lado derecho del texto, contando también desde la derecha
 ' BUSCARV_COMPLETO --> Devuelve todos los valores de la coincidiencia, o todos los valores distintos, separados por salto de línea. 
 '                      Permite devolver a izquierda y derecha de la columna de búsqueda.
 ' BUSCARV_N_APARICION --> Devuelve la n-ésima aparición del valor buscado. Permite devolver a izquierda y derecha de la columna de búsqueda.
@@ -25,20 +26,34 @@ Attribute VB_Name = "Funciones"
 ' LIMPIA_TEXTOS --> Reemplaza los caracteres más comunes de un texto, dejándolo limpio, sólo con espacios y caracteres alfanuméricos.
 
 
-Function INVIERTE_TEXTO(ByVal texto As String) As String
-' Invierte un texto, quitando espacios en blanco antes y después:
 
-        INVIERTE_TEXTO = StrReverse(Trim(texto))
+
+
+Function INVIERTE_TEXTO(ByVal texto As String) As String
+	' Invierte un texto, quitando espacios en blanco antes y después:
+
+    INVIERTE_TEXTO = StrReverse(Trim(texto))
+		
 End Function
 
-Function HALLAR_DESDE_FIN(ByVal texto_buscado As String, _
-                    ByVal texto_en As String, _
-                    ByVal posicion As Integer)
 
-' Busca un patrón dado en un texto empezando desde el final, devuelve posición contando desde el inicio:
+Function EXTRAE_DERECHA(ByVal text As String, ByVal init_pos As Integer, ByVal leng As Integer) As String
+
+    ' Extrae desde el lado derecho del texto, contando también desde la derecha
+
+    text = StrReverse(text)
+    
+    EXTRAE_DERECHA = StrReverse(Mid(text, init_pos, leng))
+
+
+End Function
+
+Function HALLAR_DERECHA(ByVal texto_buscado As String, ByVal texto_en As String, ByVal posicion As Integer)
+
+	' Busca un patrón dado en un texto empezando desde el final, devuelve posición contando desde el inicio:
 
     texto_inv = StrReverse(texto_en)
-    HALLAR_DESDE_FIN = Len(texto_en) - InStr(posicion, texto_inv, texto_buscado, vbTextCompare) + 1
+    HALLAR_DERECHA = Len(texto_en) - InStr(posicion, texto_inv, texto_buscado, vbTextCompare) + 1
 
 End Function
 
@@ -52,14 +67,14 @@ Function BUSCARV_COMPLETO(ByVal celda As Variant, _
                         Optional ByVal todos_o_dist As Boolean = False)
                         
                         
-' Función buscarv que amplía la funcionalidad de la existente en dos sentidos:
+	' Función buscarv que amplía la funcionalidad de la existente en dos sentidos:
 
-'1) No está limitada a buscar a la derecha del valor de búsqueda: en esta función se indica la columna dentro
-' del rango a buscar donde se quiere buscar el valor, y la columna de la que obtener el valor a devolver,
-' eliminando esta limitación del buscarv original
+	'1) No está limitada a buscar a la derecha del valor de búsqueda: en esta función se indica la columna dentro
+	' del rango a buscar donde se quiere buscar el valor, y la columna de la que obtener el valor a devolver,
+	' eliminando esta limitación del buscarv original
 
-'2) No se limita a devolver el valor para la primera coincidencia: devuelve los valores de todas las coincidencias,
-' o todos los de las coincidencias distintas entre sí, según se prefiera
+	'2) No se limita a devolver el valor para la primera coincidencia: devuelve los valores de todas las coincidencias,
+	' o todos los de las coincidencias distintas entre sí, según se prefiera
     
     resultado = ""
     enabler = True
@@ -107,13 +122,13 @@ Function BUSCARV_N_APARICION(ByVal celda As Variant, _
                             ByVal num_aparicion As Integer)
                         
                         
-'Función buscarv que amplía la funcionalidad de la existente en dos sentidos:
+	'Función buscarv que amplía la funcionalidad de la existente en dos sentidos:
 
-'1) No está limitada a buscar a la derecha del valor de búsqueda: en esta función se indica la columna dentro
-' del rango a buscar donde se quiere buscar el valor, y la columna de la que obtener el valor a devolver,
-' eliminando esta limitación del buscarv original
+	'1) No está limitada a buscar a la derecha del valor de búsqueda: en esta función se indica la columna dentro
+	' del rango a buscar donde se quiere buscar el valor, y la columna de la que obtener el valor a devolver,
+	' eliminando esta limitación del buscarv original
 
-'2) No devuelve la primera aparición en el rango de búsqueda, si no la enésima, a elección del usuario
+	'2) No devuelve la primera aparición en el rango de búsqueda, si no la enésima, a elección del usuario
     
     contador = 0
     BUSCARV_N_APARICION = "N/A"
@@ -147,10 +162,6 @@ Function BUSCARV_N_APARICION(ByVal celda As Variant, _
     End If
 
 End Function
-
-
-
-
 
 Function COINCIDIR_MAS_CERCANO(ByVal valor As String, ByVal rango As Range, Optional ByVal umbral As Double = 0) As String
 
